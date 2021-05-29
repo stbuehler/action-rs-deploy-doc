@@ -1,0 +1,42 @@
+name: 'deploy-rustdoc'
+description: 'Deploy rustdoc to some git repository'
+inputs:
+  target:
+    description: 'Target git repository'
+    required: true
+  target-folder:
+    description: 'Target folder in repository'
+    required: true
+  target-branch:
+    description: 'Branch of git repository to push to'
+    required: true
+    default: "gh-pages"
+  git-user-name:
+    description: 'git commit user.name'
+    required: true
+    default: "action-rs-deploy-doc"
+  git-user-email:
+    description: 'git commit user.email'
+    required: true
+    default: "action-rs-deploy-doc@invalid"
+  ssh-private-key:
+    description: 'SSH private key'
+  doc-dir:
+    description: 'Directory docs were built in'
+    required: true
+    default: 'target/doc'
+runs:
+  using: "composite"
+  steps:
+    - run: exec ${{ github.action_path }}/deploy.sh
+      shell: bash
+      env:
+        TARGET: ${{ inputs.target }}
+        TARGET_FOLDER: ${{ inputs.target-folder }}
+        TARGET_BRANCH: ${{ inputs.target-branch }}
+        GIT_USER_NAME: ${{ inputs.git-user-name }}
+        GIT_USER_EMAIL: ${{ inputs.git-user-email }}
+        SSH_PRIVATE_KEY: ${{ inputs.ssh-private-key }}
+        DOC_DIR: ${{ inputs.doc-dir }}
+        # for commit message
+        SLUG: ${{ github.repository }}
