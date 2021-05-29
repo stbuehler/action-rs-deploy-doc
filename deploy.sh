@@ -45,8 +45,13 @@ fi
 
 git config user.name "${GIT_USER_NAME}"
 git config user.email "${GIT_USER_EMAIL}"
-git commit -qm "doc upload for ${SLUG}"
-git push -q origin "${TARGET_BRANCH}"
+if ! git diff-index --cached --quiet HEAD; then
+	echo "Committing and pushing doc updates"
+	git commit -qm "doc upload for ${SLUG}"
+	git push -q origin "${TARGET_BRANCH}"
+else
+	echo "No doc changes"
+fi
 
 # cleanup
 rm -rf "${checkout_dir}" "${doc_dir}/.git"
